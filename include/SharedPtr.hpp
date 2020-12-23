@@ -39,33 +39,11 @@ class SharedPtr {
     }
   };
 
-  auto operator=(const SharedPtr& r) -> SharedPtr& {
-    this->reset();
-    this->Pointer = r.Pointer;
-    this->Counter = r.Counter;
-    if (Counter != nullptr) {
-      ++(*Counter);
-    }
-    return *this;
-  };
-
-  auto operator=(SharedPtr&& r) -> SharedPtr& {
-    this->reset();
-    this->Pointer = r.Pointer;
-    this->Counter = r.Counter;
-    if (Counter != nullptr) {
-      ++(*Counter);
-    }
-    return *this;
-  };
-
   operator bool() const { return Pointer; };
 
   auto operator*() const -> T& { return *Pointer; };
 
   auto operator->() const -> T* { return Pointer; };
-
-  auto get() -> T* { return Pointer; };
 
   void reset() {
     if (Counter != nullptr) {
@@ -78,15 +56,6 @@ class SharedPtr {
       Pointer = nullptr;
       Counter = nullptr;
     }
-  };
-
-  void reset(T* ptr) {
-    if (Counter != nullptr) {
-      --(*Counter);
-    }
-    Counter = new std::atomic_uint;
-    *Counter = 1;
-    Pointer = ptr;
   };
 
   void swap(SharedPtr& r) {
