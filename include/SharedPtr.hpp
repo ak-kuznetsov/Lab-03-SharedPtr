@@ -40,9 +40,9 @@ class SharedPtr {
   };
 
   auto operator=(const SharedPtr& r) -> SharedPtr& {
-    this->reset();
-    this->Pointer = r.Pointer;
-    this->Counter = r.Counter;
+    (*this).reset();
+    (*this).Pointer = r.Pointer;
+    (*this).Counter = r.Counter;
     if (Counter != nullptr) {
       ++(*Counter);
     }
@@ -50,9 +50,9 @@ class SharedPtr {
   };
 
   auto operator=(SharedPtr&& r) -> SharedPtr& {
-    this->reset();
-    this->Pointer = r.Pointer;
-    this->Counter = r.Counter;
+    (*this).reset();
+    (*this).Pointer = r.Pointer;
+    (*this).Counter = r.Counter;
     if (Counter != nullptr) {
       ++(*Counter);
     }
