@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_COVERAGE "Build coverage" OFF)
+option(BUILD_TESTS "Build tests" ON)
+option(BUILD_DOCS "Build documentation" OFF)
+option(BUILD_COVERAGE "Build code coverage" OFF)
 
 set(
         HUNTER_CACHE_SERVERS
@@ -18,9 +20,8 @@ HunterGate(
         SHA1 "35fa55bc1dfcf9f4d7264f8bb26cd1759ce1ae07"
 )
 
-project(lab-03)
+project(lab-03 VERSION 0.1.0)
 string(APPEND CMAKE_CXX_FLAGS " -pedantic -Werror -Wall -Wextra")
-string(APPEND CMAKE_CXX_FLAGS " -Wno-unused-command-line-argument")
 string(APPEND CMAKE_CXX_FLAGS " -Wshadow -Wnon-virtual-dtor")
 
 hunter_add_package(GTest)
@@ -33,29 +34,25 @@ target_include_directories(lab-03 INTERFACE
         )
 
 add_executable(tests
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/SharedPtr_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/SharedPtr_Test.cpp
         )
 
 target_include_directories(tests
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
         )
 
-target_link_libraries(tests GTest::gtest_main lab-03)
+target_link_libraries(tests ${PROJECT_NAME} GTest::gtest_main)
 
 enable_testing()
 add_test(NAME unit_tests COMMAND tests)
 
 if(BUILD_COVERAGE)
-    function(ENABLE_PROJECT_COVERAGE PROJECT)
-        target_compile_options(${PROJECT} PRIVATE --coverage)
-        target_link_libraries(${PROJECT} --coverage)
-        add_coverage(${PROJECT})
-    endfunction()
     set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
+    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/tools/CMake-codecov/cmake" ${CMAKE_MODULE_PATH})
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
     find_package(codecov)
-    target_compile_options(tests PRIVATE --coverage)
-    target_link_libraries(tests --coverage)
+    target_compile_options(tests PRIVATE)
+    target_link_libraries(tests)
     add_coverage(tests)
     list(APPEND LCOV_REMOVE_PATTERNS "'${PROJECT_SOURCE_DIR}/tests/*'")
     coverage_evaluate()
