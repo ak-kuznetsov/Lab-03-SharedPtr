@@ -39,6 +39,26 @@ class SharedPtr {
     }
   };
 
+  auto operator=(const SharedPtr& r) -> SharedPtr& {
+    this->reset();
+    this->Pointer = r.Pointer;
+    this->Counter = r.Counter;
+    if (Counter != nullptr) {
+      ++(*Counter);
+    }
+    return *this;
+  };
+
+  auto operator=(SharedPtr&& r) -> SharedPtr& {
+    this->reset();
+    this->Pointer = r.Pointer;
+    this->Counter = r.Counter;
+    if (Counter != nullptr) {
+      ++(*Counter);
+    }
+    return *this;
+  };
+
   operator bool() const { return Pointer; };
 
   auto operator*() const -> T& { return *Pointer; };
