@@ -30,7 +30,7 @@ class SharedPtr {
   };
 
   ~SharedPtr() {
-    if (*Counter == 1) {
+    if (*Counter == 0) {
       delete Counter;
       Counter = nullptr;
       Pointer = nullptr;
@@ -67,7 +67,7 @@ class SharedPtr {
 
   void reset() {
     if (Counter != nullptr) {
-      if (*Counter != 1) {
+      if (*Counter != 0) {
         --(*Counter);
       } else {
         delete Pointer;
