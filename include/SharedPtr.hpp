@@ -16,9 +16,8 @@ class SharedPtr {
  public:
   SharedPtr() : Pointer{nullptr}, Counter{nullptr} {};
 
-  explicit SharedPtr(T* ptr) : Pointer{ptr}, Counter{new std::atomic_uint} {
-    *Counter = 1;
-  };
+  explicit SharedPtr(T* ptr)
+      : Pointer{ptr}, Counter{new std::atomic_uint{1}} {};
 
   SharedPtr(const SharedPtr& r) : Pointer{r.Pointer}, Counter{r.Counter} {
     ++(*Counter);
@@ -40,9 +39,9 @@ class SharedPtr {
   };
 
   auto operator=(const SharedPtr& r) -> SharedPtr& {
-    (*this).reset();
-    (*this).Pointer = r.Pointer;
-    (*this).Counter = r.Counter;
+    this->reset();
+    this->Pointer = r.Pointer;
+    this->Counter = r.Counter;
     if (Counter != nullptr) {
       ++(*Counter);
     }
@@ -50,17 +49,15 @@ class SharedPtr {
   };
 
   auto operator=(SharedPtr&& r) -> SharedPtr& {
-    (*this).reset();
-    (*this).Pointer = r.Pointer;
-    (*this).Counter = r.Counter;
+    this->reset();
+    this->Pointer = r.Pointer;
+    this->Counter = r.Counter;
     if (Counter != nullptr) {
       ++(*Counter);
     }
     return *this;
   };
-
-  operator bool() const { return Pointer; };
-
+  /* проверка: указывает ли указатель на на объект */
   auto operator*() const -> T& { return *Pointer; };
 
   auto operator->() const -> T* { return Pointer; };
@@ -83,7 +80,7 @@ class SharedPtr {
     r = *this;
     *this = temp;
   };
-
+  /* возвращает количество объектов SharedPtr, которые ссылаются на тот же управляемый объект */
   auto use_count() const -> std::size_t { return *Counter; };
 };
 #endif  // INCLUDE_SHAREDPTR_HPP_
