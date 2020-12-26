@@ -1,4 +1,7 @@
 # Лабораторная работа №3
+| branch | status |
+|--------|--------|
+|developer|[![Build Status](https://travis-ci.com/ak-kuznetsov/Lab-03-SharedPtr.svg?branch=developer)](https://travis-ci.com/ak-kuznetsov/Lab-03-SharedPtr)
 
 ### Задание
 
